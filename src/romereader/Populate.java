@@ -18,12 +18,17 @@ public class Populate {
     private final static Logger log = Logger.getLogger(Populate.class.getName());
 
     public List<SyndEntry> populate() throws MalformedURLException, IOException, IllegalArgumentException, FeedException {
-        log.info("starting...");
+        log.fine("starting...");
         URL url = new URL("http://rss.cnn.com/rss/cnn_topstories.rss");
         HttpURLConnection httpcon = (HttpURLConnection) url.openConnection(Proxy.NO_PROXY);
+        log.fine("..connected..");
         SyndFeedInput input = new SyndFeedInput();
+        log.fine("..input..");
         SyndFeed feed = input.build(new XmlReader(httpcon));
+        log.fine("..build..");
         List<SyndEntry> entries = feed.getEntries();
+        log.fine("..entries..");
+        log.fine(entries.toString());
         return entries;
     }
 }

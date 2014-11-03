@@ -6,6 +6,7 @@
 package romereader;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,6 +38,8 @@ public class Link implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    @Column(name = "created")
+    private Timestamp created;
     @Column(name = "link")
     private String link;
     @Column(name = "status")
@@ -55,6 +58,14 @@ public class Link implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Timestamp getCreated() {
+        return created;
+    }
+
+    public void setCreated(Timestamp created) {
+        this.created = created;
     }
 
     public String getLink() {

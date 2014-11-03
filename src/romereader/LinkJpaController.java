@@ -35,6 +35,21 @@ public class LinkJpaController implements Serializable {
         }
     }
 
+    
+    public void merge(Link link) {
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            em.getTransaction().begin();
+            em.merge(link);
+            em.getTransaction().commit();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+    
     public void edit(Link link) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
