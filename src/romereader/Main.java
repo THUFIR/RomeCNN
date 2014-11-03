@@ -7,12 +7,14 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 public class Main {
 
     private final static Logger log = Logger.getLogger(Main.class.getName());
     private final Populate p = new Populate();
-    private final LinkFacade lf = new LinkFacade();
+    private LinkJpaController c = null;
 
     public static void main(String... args) {
         try {
@@ -24,12 +26,13 @@ public class Main {
     }
 
     private void getLinks() throws IOException, MalformedURLException, IllegalArgumentException, FeedException {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("RomeReaderPU");
+        c = new LinkJpaController(emf);
         List<SyndEntry> entries = p.populate();
         Link l = new Link();
         for (SyndEntry entry : entries) {
             l = new Link();
             l.setLink(entry.getLink());
-            lf.populateDatabase(l);   //merge, not populate
         }
     }
 }
