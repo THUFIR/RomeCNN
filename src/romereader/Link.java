@@ -6,7 +6,7 @@
 package romereader;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +16,9 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -23,33 +26,45 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author thufir
  */
 @Entity
-@Table(name = "links", catalog = "leads", schema = "")
+@Table(name = "links", catalog = "leads", schema = "", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"link"})})
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Link.findAll", query = "SELECT l FROM Link l"),
     @NamedQuery(name = "Link.findById", query = "SELECT l FROM Link l WHERE l.id = :id"),
+    @NamedQuery(name = "Link.findByCreated", query = "SELECT l FROM Link l WHERE l.created = :created"),
     @NamedQuery(name = "Link.findByLink", query = "SELECT l FROM Link l WHERE l.link = :link"),
     @NamedQuery(name = "Link.findByStatus", query = "SELECT l FROM Link l WHERE l.status = :status")})
 public class Link implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Integer id;
-    @Column(name = "created")
-    private Timestamp created;
-    @Column(name = "link")
+    @Basic(optional = false)
+    @Column(name = "created", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created;
+    @Basic(optional = false)
+    @Column(name = "link", nullable = false, length = 767)
     private String link;
-    @Column(name = "status")
-    private Integer status;
+    @Basic(optional = false)
+    @Column(name = "status", nullable = false)
+    private int status;
 
     public Link() {
     }
 
     public Link(Integer id) {
         this.id = id;
+    }
+
+    public Link(Integer id, Date created, String link, int status) {
+        this.id = id;
+        this.created = created;
+        this.link = link;
+        this.status = status;
     }
 
     public Integer getId() {
@@ -60,11 +75,11 @@ public class Link implements Serializable {
         this.id = id;
     }
 
-    public Timestamp getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
@@ -76,11 +91,11 @@ public class Link implements Serializable {
         this.link = link;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -106,8 +121,7 @@ public class Link implements Serializable {
 
     @Override
     public String toString() {
-        return "\nid\t" + id
-                + "\nlink\t" + link;
+        return "romereader.Link[ id=" + id + " ]";
     }
-
+    
 }
