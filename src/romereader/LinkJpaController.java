@@ -2,6 +2,7 @@ package romereader;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
@@ -10,8 +11,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import romereader.exceptions.NonexistentEntityException;
 
-
 public class LinkJpaController implements Serializable {
+
+    private final static Logger log = Logger.getLogger(LinkJpaController.class.getName());
 
     public LinkJpaController(EntityManagerFactory emf) {
         this.emf = emf;
@@ -29,6 +31,8 @@ public class LinkJpaController implements Serializable {
             em.getTransaction().begin();
             em.persist(link);
             em.getTransaction().commit();
+        } catch (Exception e) {
+            log.fine(e.toString());
         } finally {
             if (em != null) {
                 em.close();
@@ -65,6 +69,7 @@ public class LinkJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Link link;
+
             try {
                 link = em.getReference(Link.class, id);
                 link.getId();
@@ -92,12 +97,15 @@ public class LinkJpaController implements Serializable {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Link.class));
+            cq
+                    .select(cq.from(Link.class
+                            ));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
                 q.setFirstResult(firstResult);
             }
+
             return q.getResultList();
         } finally {
             em.close();
@@ -106,6 +114,7 @@ public class LinkJpaController implements Serializable {
 
     public Link findLink(Integer id) {
         EntityManager em = getEntityManager();
+
         try {
             return em.find(Link.class, id);
         } finally {
@@ -117,7 +126,8 @@ public class LinkJpaController implements Serializable {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Link> rt = cq.from(Link.class);
+            Root<Link> rt = cq.from(Link.class
+            );
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
@@ -125,5 +135,5 @@ public class LinkJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }

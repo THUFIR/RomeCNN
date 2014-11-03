@@ -40,5 +40,6 @@ public class Main {
             link.setLink(entry.getLink());
             controller.create(link);
         }
+        log.severe("..completed");
     }
 }

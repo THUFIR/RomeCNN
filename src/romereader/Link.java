@@ -17,7 +17,7 @@ import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@Table(name = "links", catalog = "links", schema = "", uniqueConstraints = {
+@Table(name = "links", catalog = "rome_aggregator", schema = "", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"link"})})
 @XmlRootElement
 @NamedQueries({
