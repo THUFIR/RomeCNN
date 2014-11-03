@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Link.findByLink", query = "SELECT l FROM Link l WHERE l.link = :link"),
     @NamedQuery(name = "Link.findByStatus", query = "SELECT l FROM Link l WHERE l.status = :status")})
 public class Link implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -94,7 +95,8 @@ public class Link implements Serializable {
 
     @Override
     public String toString() {
-        return "romereader.Links[ id=" + id + " ]";
+        return "\nid\t" + id
+                + "\nlink\t" + link;
     }
-    
+
 }

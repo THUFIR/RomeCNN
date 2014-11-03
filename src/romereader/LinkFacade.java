@@ -17,7 +17,7 @@ public class LinkFacade {
     public void populateDatabase(Link newLink) {
         log.info("starting...");
         log.info("null link..");
-        dao.create(newLink);
+        dao.create2(newLink);
         log.info("...succeeded");
         log.info("...done");
     }

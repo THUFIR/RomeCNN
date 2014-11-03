@@ -64,6 +64,24 @@ public class LinkDAO implements Serializable {
         }
     }
 
+    public void create2(Link link) {
+        log.warning(link.toString());
+        EntityManager em = null;
+        link.setStatus(0);
+        try {
+            em = getEntityManager();
+            em.getTransaction().begin();
+            em.merge(link);
+            em.getTransaction().commit();
+        } catch (RollbackException rbe) {
+            log.warning(rbe.toString());
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
     public void edit(Link links) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
