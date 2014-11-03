@@ -12,7 +12,7 @@ public class Main {
 
     private final static Logger log = Logger.getLogger(Main.class.getName());
     private final Populate p = new Populate();
-    private final LinksFacade lf = new LinksFacade();
+    private final LinkFacade lf = new LinkFacade();
 
     public static void main(String... args) {
         try {
@@ -25,11 +25,11 @@ public class Main {
 
     private void getLinks() throws IOException, MalformedURLException, IllegalArgumentException, FeedException {
         List<SyndEntry> entries = p.populate();
-        Links l = null;
+        Link l = new Link();
         for (SyndEntry entry : entries) {
-            l = new Links();
+            l = new Link();
             l.setLink(entry.getLink());
-            lf.p(l);
+            lf.populateDatabase(l);   //merge, not populate
         }
     }
 }

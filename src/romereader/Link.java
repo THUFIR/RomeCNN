@@ -25,11 +25,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "links", catalog = "leads", schema = "")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Links.findAll", query = "SELECT l FROM Links l"),
-    @NamedQuery(name = "Links.findById", query = "SELECT l FROM Links l WHERE l.id = :id"),
-    @NamedQuery(name = "Links.findByLink", query = "SELECT l FROM Links l WHERE l.link = :link"),
-    @NamedQuery(name = "Links.findByStatus", query = "SELECT l FROM Links l WHERE l.status = :status")})
-public class Links implements Serializable {
+    @NamedQuery(name = "Link.findAll", query = "SELECT l FROM Link l"),
+    @NamedQuery(name = "Link.findById", query = "SELECT l FROM Link l WHERE l.id = :id"),
+    @NamedQuery(name = "Link.findByLink", query = "SELECT l FROM Link l WHERE l.link = :link"),
+    @NamedQuery(name = "Link.findByStatus", query = "SELECT l FROM Link l WHERE l.status = :status")})
+public class Link implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,10 +41,10 @@ public class Links implements Serializable {
     @Column(name = "status")
     private Integer status;
 
-    public Links() {
+    public Link() {
     }
 
-    public Links(Integer id) {
+    public Link(Integer id) {
         this.id = id;
     }
 
@@ -82,10 +82,10 @@ public class Links implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Links)) {
+        if (!(object instanceof Link)) {
             return false;
         }
-        Links other = (Links) object;
+        Link other = (Link) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

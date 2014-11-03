@@ -1,4 +1,3 @@
-
 package romereader;
 
 import java.io.Serializable;
@@ -8,18 +7,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.RollbackException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import romereader.exceptions.NonexistentEntityException;
 
-public class LinksDAO implements Serializable {
+public class LinkDAO implements Serializable {
 
-    
-    private final static Logger log = Logger.getLogger(LinksDAO.class.getName());
+    private final static Logger log = Logger.getLogger(LinkDAO.class.getName());
 
-    
-    public LinksDAO(EntityManagerFactory emf) {
+    public LinkDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -28,13 +25,38 @@ public class LinksDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Links links) {
+    /*
+     public Link searchForMatch(Link newLink) {
+     EntityManager em = getEntityManager();
+     Link linkResult = null;
+     CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+     CriteriaQuery<Link> linkCriteriaQuery = criteriaBuilder.createQuery(Link.class);
+     Root<Link> clientRoot = linkCriteriaQuery.from(Link.class);
+     linkCriteriaQuery.select(clientRoot);
+     List<Predicate> predicates = new ArrayList<>();
+     //      predicates.add(criteriaBuilder.equal(clientRoot.get(Link_.link), "%" + newLink.getLink() + "%"));
+     linkCriteriaQuery.where(predicates.toArray(new Predicate[0]));
+     List<Link> links = em.createQuery(linkCriteriaQuery).getResultList();
+     try {
+     linkResult = em.createQuery(linkCriteriaQuery).getSingleResult();
+     } catch (javax.persistence.NoResultException nre) {
+     log.info(nre.toString());
+     }
+     em.close();
+     return linkResult;
+     }
+
+     */
+    public void create(Link link) {
         EntityManager em = null;
+        link.setStatus(0);
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            em.persist(links);
+            em.persist(link);
             em.getTransaction().commit();
+        } catch (RollbackException rbe) {
+            log.warning(rbe.toString());
         } finally {
             if (em != null) {
                 em.close();
@@ -42,7 +64,7 @@ public class LinksDAO implements Serializable {
         }
     }
 
-    public void edit(Links links) throws NonexistentEntityException, Exception {
+    public void edit(Link links) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -70,9 +92,9 @@ public class LinksDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Links links;
+            Link links;
             try {
-                links = em.getReference(Links.class, id);
+                links = em.getReference(Link.class, id);
                 links.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The links with id " + id + " no longer exists.", enfe);
@@ -86,19 +108,19 @@ public class LinksDAO implements Serializable {
         }
     }
 
-    public List<Links> findLinksEntities() {
+    public List<Link> findLinksEntities() {
         return findLinksEntities(true, -1, -1);
     }
 
-    public List<Links> findLinksEntities(int maxResults, int firstResult) {
+    public List<Link> findLinksEntities(int maxResults, int firstResult) {
         return findLinksEntities(false, maxResults, firstResult);
     }
 
-    private List<Links> findLinksEntities(boolean all, int maxResults, int firstResult) {
+    private List<Link> findLinksEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Links.class));
+            cq.select(cq.from(Link.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -110,10 +132,10 @@ public class LinksDAO implements Serializable {
         }
     }
 
-    public Links findLinks(Integer id) {
+    public Link findLinks(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Links.class, id);
+            return em.find(Link.class, id);
         } finally {
             em.close();
         }
@@ -123,7 +145,7 @@ public class LinksDAO implements Serializable {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Links> rt = cq.from(Links.class);
+            Root<Link> rt = cq.from(Link.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
@@ -132,23 +154,4 @@ public class LinksDAO implements Serializable {
         }
     }
 
-
-    
-    public Links searchForMatch(Links newLink) {
-        EntityManager em = getEntityManager();
-        Links linkResult = null;
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Links> clientCriteriaQuery = criteriaBuilder.createQuery(Links.class);
-        Root<Links> clientRoot = clientCriteriaQuery.from(Links.class);
-        clientCriteriaQuery.select(clientRoot);
-        List<Links> links = em.createQuery(clientCriteriaQuery).getResultList();
-        try {
-            linkResult = em.createQuery(clientCriteriaQuery).getSingleResult();
-        } catch (javax.persistence.NoResultException nre) {
-            log.info(nre.toString());
-        }
-        em.close();
-        return linkResult;
-    }
-    
 }
