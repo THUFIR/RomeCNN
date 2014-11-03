@@ -33,7 +33,7 @@ public class Main {
         } catch (IOException | IllegalArgumentException | FeedException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        log.info(entries.toString());
+        log.fine(entries.toString());
         Link link = null;
         for (SyndEntry entry : entries) {
             log.fine("ping");

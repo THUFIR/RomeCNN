@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package romereader;
 
 import java.io.Serializable;
@@ -15,10 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import romereader.exceptions.NonexistentEntityException;
 
-/**
- *
- * @author thufir
- */
+
 public class LinkJpaController implements Serializable {
 
     public LinkJpaController(EntityManagerFactory emf) {
