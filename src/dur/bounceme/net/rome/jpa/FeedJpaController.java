@@ -1,21 +1,18 @@
-package romereader;
+package dur.bounceme.net.rome.jpa;
 
+import dur.bounceme.net.rome.jpa.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import romereader.exceptions.NonexistentEntityException;
 
-public class LinkJpaController implements Serializable {
+public class FeedJpaController implements Serializable {
 
-    private final static Logger log = Logger.getLogger(LinkJpaController.class.getName());
-
-    public LinkJpaController(EntityManagerFactory emf) {
+    public FeedJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -24,15 +21,13 @@ public class LinkJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Link link) {
+    public void create(Feed feed) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            em.persist(link);
+            em.persist(feed);
             em.getTransaction().commit();
-        } catch (Exception e) {
-            log.fine(e.toString());
         } finally {
             if (em != null) {
                 em.close();
@@ -40,19 +35,19 @@ public class LinkJpaController implements Serializable {
         }
     }
 
-    public void edit(Link link) throws NonexistentEntityException, Exception {
+    public void edit(Feed feed) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            link = em.merge(link);
+            feed = em.merge(feed);
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = link.getId();
-                if (findLink(id) == null) {
-                    throw new NonexistentEntityException("The link with id " + id + " no longer exists.");
+                Integer id = feed.getId();
+                if (findFeed(id) == null) {
+                    throw new NonexistentEntityException("The feed with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -68,15 +63,14 @@ public class LinkJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Link link;
-
+            Feed feed;
             try {
-                link = em.getReference(Link.class, id);
-                link.getId();
+                feed = em.getReference(Feed.class, id);
+                feed.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The link with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The feed with id " + id + " no longer exists.", enfe);
             }
-            em.remove(link);
+            em.remove(feed);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -85,49 +79,44 @@ public class LinkJpaController implements Serializable {
         }
     }
 
-    public List<Link> findLinkEntities() {
-        return findLinkEntities(true, -1, -1);
+    public List<Feed> findFeedEntities() {
+        return findFeedEntities(true, -1, -1);
     }
 
-    public List<Link> findLinkEntities(int maxResults, int firstResult) {
-        return findLinkEntities(false, maxResults, firstResult);
+    public List<Feed> findFeedEntities(int maxResults, int firstResult) {
+        return findFeedEntities(false, maxResults, firstResult);
     }
 
-    private List<Link> findLinkEntities(boolean all, int maxResults, int firstResult) {
+    private List<Feed> findFeedEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq
-                    .select(cq.from(Link.class
-                            ));
+            cq.select(cq.from(Feed.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
                 q.setFirstResult(firstResult);
             }
-
             return q.getResultList();
         } finally {
             em.close();
         }
     }
 
-    public Link findLink(Integer id) {
+    public Feed findFeed(Integer id) {
         EntityManager em = getEntityManager();
-
         try {
-            return em.find(Link.class, id);
+            return em.find(Feed.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getLinkCount() {
+    public int getFeedCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Link> rt = cq.from(Link.class
-            );
+            Root<Feed> rt = cq.from(Feed.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
@@ -135,5 +124,5 @@ public class LinkJpaController implements Serializable {
             em.close();
         }
     }
-
+    
 }
